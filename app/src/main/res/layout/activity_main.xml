@@ -7,7 +7,9 @@
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/background"
+        android:padding="16dp">
 
         <LinearLayout
             android:id="@+id/topleft"
@@ -15,7 +17,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:minHeight="50dp"
-            android:background="@drawable/shape" >
+            android:background="@drawable/shape"
+            android:padding="16dp">
 
             <ImageView
                 android:id="@+id/myimage1"
@@ -31,7 +34,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:minHeight="50dp"
-            android:background="@drawable/shape" >
+            android:background="@drawable/shape"
+            android:padding="16dp">
 
             <ImageView
                 android:id="@+id/myimage2"
@@ -47,7 +51,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:minHeight="50dp"
-            android:background="@drawable/shape" >
+            android:background="@drawable/shape"
+            android:padding="16dp">
 
             <ImageView
                 android:id="@+id/myimage3"
@@ -63,7 +68,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:minHeight="50dp"
-            android:background="@drawable/shape" >
+            android:background="@drawable/shape"
+            android:padding="16dp" >
 
             <ImageView
                 android:id="@+id/myimage4"

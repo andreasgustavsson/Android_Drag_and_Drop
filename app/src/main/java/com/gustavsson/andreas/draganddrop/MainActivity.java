@@ -11,6 +11,7 @@ import android.view.View.DragShadowBuilder;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.myimage2).setOnTouchListener(new MyTouchListener());
         findViewById(R.id.myimage3).setOnTouchListener(new MyTouchListener());
         findViewById(R.id.myimage4).setOnTouchListener(new MyTouchListener());
+        findViewById(R.id.topleft).setOnTouchListener(new MyTouchListener());
+        findViewById(R.id.topright).setOnTouchListener(new MyTouchListener());
+        findViewById(R.id.bottomleft).setOnTouchListener(new MyTouchListener());
+        findViewById(R.id.bottomright).setOnTouchListener(new MyTouchListener());
         findViewById(R.id.myimage1).setOnDragListener(new MyChildDragListener());
         findViewById(R.id.myimage2).setOnDragListener(new MyChildDragListener());
         findViewById(R.id.myimage3).setOnDragListener(new MyChildDragListener());
@@ -35,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.topright).setOnDragListener(new MyDragListener());
         findViewById(R.id.bottomleft).setOnDragListener(new MyDragListener());
         findViewById(R.id.bottomright).setOnDragListener(new MyDragListener());
+
+        findViewById(R.id.rootLayout).setOnDragListener(new MyDragListener(R.drawable.background));
 
     }
 
@@ -104,6 +111,17 @@ public class MainActivity extends AppCompatActivity {
                         v.setVisibility(View.VISIBLE);
                         return true;
                     }
+
+                    // Check that view is not dropped onto a child/grandchild/... of its own
+                    ViewParent vAncestor = v.getParent();
+                    while (vAncestor != null) {
+                        if (vAncestor == viewToInsert) {
+                            System.out.println("ancestor dropped onto descendent");
+                            v.setVisibility(View.VISIBLE);
+                            return true;
+                        }
+                        vAncestor = vAncestor.getParent();
+                    }
                     ViewGroup viewToInsertOwner = (ViewGroup) viewToInsert.getParent();
                     ViewGroup viewParent = (LinearLayout) v.getParent();
                     boolean viewsAreOwnedByTheSameContainer = viewToInsertOwner == viewParent;
@@ -138,11 +156,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    // In case we drop on the linearlayout, then this is used
+    // In case we drop on a linearlayout, then this is used
     class MyDragListener implements OnDragListener {
-        Drawable enterShape = getResources().getDrawable(
-                R.drawable.shape_droptarget);
+        Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
         Drawable normalShape = getResources().getDrawable(R.drawable.shape);
+
+        MyDragListener() {}
+        MyDragListener(int shapeId) {
+            normalShape = getResources().getDrawable(shapeId);
+        }
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
@@ -159,7 +181,26 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case DragEvent.ACTION_DROP:
                     // Dropped, reassign View to ViewGroup
-                    View view = (View) event.getLocalState();
+                    View view = (View) event.getLocalState(); // this is the dragged vied - it shoud be removed and inserted
+
+                    // Dropped onto itself?
+                    if (v == view) {
+                        v.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+
+                    // Check that view is not dropped onto a child/grandchild/... of its own
+                    ViewParent vAncestor = v.getParent();
+                    while (vAncestor != null) {
+                        if (vAncestor == view) {
+                            System.out.println("ancestor dropped onto descendent");
+                            v.setVisibility(View.VISIBLE);
+                            return true;
+                        }
+                        vAncestor = vAncestor.getParent();
+                    }
+
+
                     ViewGroup owner = (ViewGroup) view.getParent();
                     owner.removeView(view);
                     LinearLayout container = (LinearLayout) v;
